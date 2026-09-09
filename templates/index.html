@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QWERTY VPS — Control Panel</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+  <!-- ================= LOGIN ================= -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card glass">
+      <div class="brand">
+        <div class="brand-primary">𝑸𝑾𝑬𝑹𝑻𝒀</div>
+        <div class="brand-secondary">𝕍ℙ𝕊</div>
+        <div class="brand-label">ᴠᴘꜱ ᴄᴏɴᴛʀᴏʟ ᴘᴀɴᴇʟ</div>
+      </div>
+      <form id="login-form" class="login-form" autocomplete="off">
+        <div class="field">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" placeholder="Enter username" required />
+        </div>
+        <div class="field">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" placeholder="Enter password" required />
+        </div>
+        <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+          <span class="btn-label">Sign In</span>
+          <span class="btn-spinner hidden"></span>
+        </button>
+      </form>
+      <div class="login-hint">Demo credentials &mdash; <b>bhs</b> / <b>bhs</b></div>
+    </div>
+  </div>
+
+  <!-- ================= APP SHELL ================= -->
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Sidebar -->
+    <aside class="sidebar glass" id="sidebar">
+      <div class="sidebar-brand">
+        <span class="brand-primary sm">𝑸𝑾𝑬𝑹𝑻𝒀</span>
+        <span class="brand-secondary sm">𝕍ℙ𝕊</span>
+      </div>
+      <nav class="nav">
+        <a class="nav-item active" data-view="overview"><span class="nav-ico">◈</span> Overview</a>
+        <a class="nav-item" data-view="applications"><span class="nav-ico">▣</span> Applications</a>
+        <a class="nav-item" data-view="console"><span class="nav-ico">▢</span> Console</a>
+        <a class="nav-item" data-view="files"><span class="nav-ico">▤</span> Files</a>
+        <a class="nav-item" data-view="backups"><span class="nav-ico">⬡</span> Backups</a>
+        <a class="nav-item" data-view="monitoring"><span class="nav-ico">∿</span> Monitoring</a>
+        <a class="nav-item" data-view="settings"><span class="nav-ico">⚙</span> Settings</a>
+        <a class="nav-item admin-only" data-view="admin"><span class="nav-ico">★</span> Admin</a>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="status-pill"><span class="dot online"></span> Server Online</div>
+        <button class="btn btn-ghost btn-sm" id="logout-btn">Logout</button>
+      </div>
+    </aside>
+
+    <div class="backdrop hidden" id="backdrop"></div>
+
+    <!-- Main -->
+    <main class="main">
+      <header class="topbar glass">
+        <button class="menu-toggle" id="menu-toggle">☰</button>
+        <h1 class="page-title" id="page-title">Overview</h1>
+        <div class="topbar-right">
+          <span class="user-chip" id="user-chip"></span>
+        </div>
+      </header>
+
+      <div class="content" id="content">
+
+        <!-- OVERVIEW -->
+        <section class="view" id="view-overview">
+          <div class="cards-grid" id="stat-cards">
+            <div class="card glass stat-card" data-stat="cpu">
+              <div class="stat-head"><span class="stat-ico">⚙</span> CPU</div>
+              <div class="stat-val" id="stat-cpu">—</div>
+              <div class="bar"><div class="bar-fill" id="bar-cpu"></div></div>
+            </div>
+            <div class="card glass stat-card" data-stat="ram">
+              <div class="stat-head"><span class="stat-ico">▤</span> RAM</div>
+              <div class="stat-val" id="stat-ram">—</div>
+              <div class="bar"><div class="bar-fill" id="bar-ram"></div></div>
+            </div>
+            <div class="card glass stat-card" data-stat="disk">
+              <div class="stat-head"><span class="stat-ico">▣</span> Disk</div>
+              <div class="stat-val" id="stat-disk">—</div>
+              <div class="bar"><div class="bar-fill" id="bar-disk"></div></div>
+            </div>
+            <div class="card glass stat-card" data-stat="network">
+              <div class="stat-head"><span class="stat-ico">↯</span> Network</div>
+              <div class="stat-val" id="stat-network">—</div>
+              <div class="stat-sub" id="stat-network-sub"></div>
+            </div>
+            <div class="card glass stat-card" data-stat="uptime">
+              <div class="stat-head"><span class="stat-ico">⏱</span> Uptime</div>
+              <div class="stat-val" id="stat-uptime">—</div>
+            </div>
+            <div class="card glass stat-card" data-stat="server">
+              <div class="stat-head"><span class="stat-ico">●</span> Server</div>
+              <div class="stat-val"><span class="badge online" id="stat-server">ONLINE</span></div>
+            </div>
+          </div>
+
+          <div class="card glass chart-card">
+            <div class="card-head"><h3>CPU & Memory</h3><span class="muted">live</span></div>
+            <canvas id="chart-stats" height="120"></canvas>
+          </div>
+
+          <div class="card glass">
+            <div class="card-head"><h3>Server Information</h3></div>
+            <div id="server-info" class="kv"></div>
+          </div>
+
+          <div class="card glass server-controls">
+            <div class="card-head"><h3>Server Controls</h3></div>
+            <div class="btn-row">
+              <button class="btn btn-success" data-action="start">START</button>
+              <button class="btn btn-danger" data-action="stop">STOP</button>
+              <button class="btn btn-warn" data-action="restart">RESTART</button>
+            </div>
+          </div>
+        </section>
+
+        <!-- APPLICATIONS -->
+        <section class="view hidden" id="view-applications">
+          <div class="card glass">
+            <div class="card-head">
+              <h3>Hosted Applications</h3>
+              <button class="btn btn-primary btn-sm" id="new-app-btn">+ New Application</button>
+            </div>
+            <div class="empty-state hidden" id="apps-empty">
+              <div class="empty-ico">▣</div>
+              <p>No applications yet. Create your first one.</p>
+            </div>
+            <div class="table-wrap">
+              <table class="data-table" id="apps-table">
+                <thead><tr><th>Name</th><th>Runtime</th><th>Port</th><th>Status</th><th>CPU</th><th>RAM</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- CONSOLE -->
+        <section class="view hidden" id="view-console">
+          <div class="card glass">
+            <div class="card-head"><h3>Application Console</h3>
+              <select id="console-app-select" class="select"></select>
+            </div>
+            <div class="btn-row">
+              <button class="btn btn-sm" data-console="install_deps">Install Dependencies</button>
+              <button class="btn btn-success btn-sm" data-console="start">Start</button>
+              <button class="btn btn-danger btn-sm" data-console="stop">Stop</button>
+              <button class="btn btn-warn btn-sm" data-console="restart">Restart</button>
+              <button class="btn btn-sm" data-console="logs">View Logs</button>
+              <button class="btn btn-sm" data-console="clear_logs">Clear Logs</button>
+            </div>
+          </div>
+          <div class="card glass terminal-card">
+            <div class="terminal" id="app-terminal"></div>
+          </div>
+        </section>
+
+        <!-- FILES -->
+        <section class="view hidden" id="view-files">
+          <div class="card glass">
+            <div class="card-head">
+              <h3>File Manager</h3>
+              <div class="btn-row">
+                <button class="btn btn-primary btn-sm" id="upload-btn">⬆ Upload</button>
+                <button class="btn btn-sm" id="mkdir-btn">+ Folder</button>
+              </div>
+            </div>
+            <div class="breadcrumb" id="file-breadcrumb"></div>
+            <div class="empty-state hidden" id="files-empty"><div class="empty-ico">▤</div><p>Directory is empty.</p></div>
+            <div class="table-wrap">
+              <table class="data-table" id="files-table">
+                <thead><tr><th>Name</th><th>Type</th><th>Size</th><th>Modified</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- BACKUPS -->
+        <section class="view hidden" id="view-backups">
+          <div class="card glass">
+            <div class="card-head"><h3>Backups</h3>
+              <button class="btn btn-primary btn-sm" id="create-backup-btn">+ Create Backup</button>
+            </div>
+            <div class="empty-state hidden" id="backups-empty"><div class="empty-ico">⬡</div><p>No backups yet.</p></div>
+            <div class="table-wrap">
+              <table class="data-table" id="backups-table">
+                <thead><tr><th>Filename</th><th>Size</th><th>Created</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- MONITORING -->
+        <section class="view hidden" id="view-monitoring">
+          <div class="card glass chart-card">
+            <div class="card-head"><h3>Live Monitoring</h3><span class="muted">updates every 1.5s</span></div>
+            <canvas id="chart-monitor" height="160"></canvas>
+          </div>
+          <div class="card glass terminal-card">
+            <div class="card-head"><h3>Live Logs</h3>
+              <div class="btn-row">
+                <button class="btn btn-sm" id="log-clear">Clear</button>
+                <button class="btn btn-sm" id="log-pause">Pause</button>
+                <button class="btn btn-sm hidden" id="log-resume">Resume</button>
+                <button class="btn btn-sm" id="log-download">Download</button>
+              </div>
+            </div>
+            <div class="terminal" id="log-terminal"></div>
+          </div>
+        </section>
+
+        <!-- SETTINGS -->
+        <section class="view hidden" id="view-settings">
+          <div class="card glass">
+            <div class="card-head"><h3>Profile</h3></div>
+            <div class="kv" id="settings-profile"></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Server Information</h3></div>
+            <div class="kv" id="settings-server"></div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>Security</h3></div>
+            <p class="muted">Sessions are secured with signed cookies. Passwords are stored as bcrypt hashes. Path traversal, command injection and privilege escalation are mitigated server-side.</p>
+          </div>
+        </section>
+
+        <!-- ADMIN -->
+        <section class="view hidden admin-only" id="view-admin">
+          <div class="cards-grid" id="admin-cards"></div>
+          <div class="card glass">
+            <div class="card-head"><h3>Activity Logs</h3></div>
+            <div class="table-wrap">
+              <table class="data-table" id="admin-logs-table">
+                <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Status</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card glass">
+            <div class="card-head"><h3>All Applications</h3></div>
+            <div class="table-wrap">
+              <table class="data-table" id="admin-apps-table">
+                <thead><tr><th>Name</th><th>Runtime</th><th>Owner</th><th>Port</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- Toasts -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <!-- Modals -->
+  <div class="modal hidden" id="modal">
+    <div class="modal-card glass">
+      <div class="modal-head"><h3 id="modal-title"></h3><button class="modal-close" id="modal-close">✕</button></div>
+      <div class="modal-body" id="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- hidden upload form -->
+  <input type="file" id="upload-input" class="hidden" />
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
